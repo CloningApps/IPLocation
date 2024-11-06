@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Location Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #location-info {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        #fetch-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>IP Location Finder</h1>
+        <button id="fetch-btn">Get My Location</button>
+        <div id="location-info"></div>
+    </div>
+
+    <script>
+        const API_KEY = '32DCD46AE9C6265F693C958B93657633';
+        const locationInfo = document.getElementById('location-info');
+        const fetchBtn = document.getElementById('fetch-btn');
+
+        fetchBtn.addEventListener('click', fetchIPLocation);
+
+        async function fetchIPLocation() {
+            try {
+                const response = await fetch(`https://api.ipapi.com/api/check?access_key=${API_KEY}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.info);
+                }
+
+                const locationHTML = `
+                    <p><strong>IP Address:</strong> ${data.ip}</p>
+                    <p><strong>City:</strong> ${data.city}</p>
+                    <p><strong>Region:</strong> ${data.region_name}</p>
+                    <p><strong>Country:</strong> ${data.country_name}</p>
+                    <p><strong>Latitude:</strong> ${data.latitude}</p>
+                    <p><strong>Longitude:</strong> ${data.longitude}</p>
+                `;
+
+                locationInfo.innerHTML = locationHTML;
+            } catch (error) {
+                locationInfo.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
